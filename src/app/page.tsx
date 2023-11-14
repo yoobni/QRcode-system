@@ -256,11 +256,7 @@ export default function Home() {
             theme={theme}
             componentSize={'large'}
         >
-            <Layout
-                style={{
-                    backgroundColor: '',
-                }}
-            >
+            <Layout>
                 <Content
                     style={{
                         position: 'relative',
@@ -495,12 +491,13 @@ const FormItem = styled(Form.Item)`
 
 const LogoBox = styled.div`
     position: absolute;
-    top: -50px;
-    left: 50px;
+    top: -60px;
+    left: 30px;
     width: 100px;
     height: 100px;
     border-radius: 5px;
     background: white;
+    z-index: 10;
     box-shadow: 0 0.5px 4px rgba(0, 0, 0, 0.03), 0 1.5px 5px rgba(0, 0, 0, 0.06);
 `;
 
