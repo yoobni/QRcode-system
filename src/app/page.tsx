@@ -7,14 +7,7 @@ import {
     Row,
     Col,
     Form,
-    Input,
-    InputNumber,
-    Select,
-    Cascader,
-    Radio,
     DatePicker,
-    Table,
-    Tooltip,
     Button,
     notification,
     Divider,
@@ -25,26 +18,12 @@ import {
 } from 'antd';
 import type { FormInstance } from 'antd';
 import theme from '../theme/themeConfig';
+import DataEntry, { DataEntryType, } from "@components/Layout/DataEntry";
+import { Footer } from '@components/Template';
 
 const { Text, Title, Link } = Typography;
 const { RangePicker } = DatePicker;
-const { Header, Content, Footer } = Layout;
-
-interface DataEntryDataType {
-    label: string;
-    value: string | boolean;
-    children?: any[];
-}
-
-interface DataEntryType {
-    name: string;
-    type: string;
-    label: string;
-    placeholder: string | [string, string];
-    rules?: any[];
-    maxLength?: number;
-    data?: DataEntryDataType[];
-}
+const { Header, Content } = Layout;
 
 const MOCK_DATA: DataEntryType[] = [
     {
@@ -56,6 +35,9 @@ const MOCK_DATA: DataEntryType[] = [
             required: true,
             message: `필수 : 이름 입력`,
         }],
+        formController: {
+            xs: 12,
+        }
     },
     {
         name: 'birth',
@@ -65,32 +47,22 @@ const MOCK_DATA: DataEntryType[] = [
         maxLength: 6,
         rules: [{
             required: true,
-            message: `필수 : 이름 입력`,
+            message: `필수 : 생년월일 입력`,
         }],
+        formController: {
+            xs: 12,
+        }
     },
     {
-        name: 'gender',
-        type: 'radio',
-        label: '성별',
-        placeholder: '생년월일 6자리 / EX) 781225',
+        name: 'phone',
+        type: 'number',
+        label: '전화번호',
+        placeholder: '전화번호 11자리 / EX) 01012345678',
+        maxLength: 11,
         rules: [{
             required: true,
-            message: `필수 : 이름 입력`,
+            message: `필수 : 전화번호 입력`,
         }],
-        data: [
-            {
-                label: '남성',
-                value: 'male',
-            },
-            {
-                label: '여성',
-                value: 'female',
-            },
-            {
-                label: '기타',
-                value: 'other',
-            },
-        ],
     },
     {
         name: 'bank',
@@ -121,107 +93,36 @@ const MOCK_DATA: DataEntryType[] = [
         ],
     },
     {
-        name: 'location',
-        type: 'cascader',
-        label: '지역',
-        placeholder: '지역 선택',
+        name: 'bankNumber',
+        type: 'number',
+        label: '계좌번호',
+        placeholder: '"-" 제외한 번호만 입력',
+        rules: [{
+            required: true,
+            message: `필수 : 계좌번호 입력`,
+        }],
+    },
+    {
+        name: 'lunchBox',
+        type: 'select',
+        label: '도시락',
+        placeholder: '도시락 선택',
         data: [
             {
-                label: '서울특별시',
-                value: 'Seoul',
-                children: [
-                    {
-                        label: '동작구',
-                        value: 'Dongjak',
-                        children: [
-                            {
-                                label: '노량진동',
-                                value: 'Noryang',
-                            },
-                            {
-                                label: '상도동',
-                                value: 'Sangdo',
-                            },
-                            {
-                                label: '흑석동',
-                                value: 'hs',
-                            },
-                            {
-                                label: '사당동',
-                                value: 'Sadang',
-                            },
-                        ]
-                    },
-                    {
-                        label: '관악구',
-                        value: 'Gwanak',
-                        children: [
-                            {
-                                label: '보라매동',
-                                value: 'Boramae',
-                            },
-                            {
-                                label: '행운동',
-                                value: 'Luckey',
-                            },
-                            {
-                                label: '신림동',
-                                value: 'Shinlim',
-                            },
-                        ],
-                    },
-                    {
-                        label: '금천구',
-                        value: 'Geumcheon',
-                        children: [
-                            {
-                                label: '가산동',
-                                value: 'Gasan',
-                            },
-                            {
-                                label: '독산동',
-                                value: 'Docksan',
-                            },
-                            {
-                                label: '시흥동',
-                                value: 'Sihyeong',
-                            },
-                        ],
-                    }
-                ]
-            },
-        ],
-    },
-    {
-        name: 'date',
-        type: 'datePicker',
-        label: '날짜',
-        placeholder: '날짜 입력',
-    },
-    {
-        name: 'range',
-        type: 'rangePicker',
-        label: '기간',
-        placeholder: ['시작 날짜', '종료 날짜'],
-    },
-    {
-        name: 'approve',
-        type: 'radioButton',
-        label: '개인정보처리동의',
-        placeholder: '',
-        rules: [
-            {
-                validator: (_: any, value: boolean) =>  value ? Promise.resolve() : Promise.reject(new Error('개인정보처리동의에 동의해야합니다.')),
-            },
-        ],
-        data: [
-            {
-                label: '동의합니다.',
-                value: true,
+                label: '1번 도시락',
+                value: '1',
             },
             {
-                label: '동의하지 않습니다.',
-                value: false,
+                label: '2번 도시락',
+                value: '2',
+            },
+            {
+                label: '3번 도시락',
+                value: '3',
+            },
+            {
+                label: '선택안함',
+                value: 'nope',
             },
         ],
     },
@@ -235,20 +136,14 @@ export default function Home() {
         let request = form.getFieldsValue([
             'name',
             'birth',
-            'gender',
+            'phone',
             'bank',
-            'location',
-            'date',
-            'range',
-            'approve',
+            'bankNumber',
+            'lunchBox',
         ]);
 
         const encodeData = btoa(JSON.stringify(request));
         setValue(encodeData);
-
-        console.log(encodeData);
-        console.log(atob(encodeData));
-        console.log(JSON.parse(atob(encodeData)));
     }
 
     return (
@@ -262,8 +157,8 @@ export default function Home() {
                         position: 'relative',
                         width: '100%',
                         maxWidth: '600px',
-                        margin: '100px auto 30px',
-                        padding: '60px 30px 30px',
+                        margin: '100px auto 32px',
+                        padding: '56px 16px 32px',
                         borderRadius: '10px',
                         backgroundColor: 'white',
                         boxShadow: '0 0.5px 8px rgba(0, 0, 0, 0.06), 0 1.5px 10px rgba(0, 0, 0, 0.08)',
@@ -278,123 +173,41 @@ export default function Home() {
                         onFinish={onSubmit}
                     >
                         <Flex>
-                            <Title level={2}>[데모버전] QR코드 데이터 입출력</Title>
+                            <Title level={2}>[DEMO] 예비군 훈련 PASS</Title>
                         </Flex>
-                        {MOCK_DATA.map((item, index) => {
-                            const {
-                                name,
-                                type = 'input',
-                                label,
-                                placeholder,
-                                rules,
-                                maxLength = 100,
-                                data = [],
-                            } = item;
+                        <Divider orientation="left" plain>
+                            기본정보 입력
+                        </Divider>
+                        <Row
+                            gutter={[8, 0]}
+                        >
+                            {MOCK_DATA.map((item, index) => {
+                                const {
+                                    name,
+                                    label,
+                                    rules,
+                                    formController,
+                                } = item;
 
-                            return (
-                                <>
-                                    {index === 3 && (
-                                        <Divider orientation="left" plain>
-                                            구분선
-                                        </Divider>
-                                    )}
-                                    <Row
+                                return (
+                                    <Col
                                         key={`input-item-${index}`}
-                                        gutter={[8, 0]}
+                                        xs={{ span: formController?.xs ? formController.xs : 24 }}
                                     >
-                                        <Col
-                                            xs={{ span: 24 }}
+                                        <FormItem
+                                            name={name}
+                                            label={label}
+                                            rules={rules}
+                                            style={{
+                                                margin: '0 0 8px',
+                                            }}
                                         >
-                                            <FormItem
-                                                name={name}
-                                                label={label}
-                                                rules={rules}
-                                            >
-                                                {type === 'input' && (
-                                                    <Input
-                                                        placeholder={typeof placeholder === 'string' ? placeholder : placeholder[0]}
-                                                        maxLength={maxLength}
-                                                        allowClear
-                                                    />
-                                                )}
-                                                {type === 'number' && (
-                                                    <InputNumber
-                                                        placeholder={typeof placeholder === 'string' ? placeholder : placeholder[0]}
-                                                        maxLength={maxLength}
-                                                        controls={false}
-                                                    />
-                                                )}
-                                                {type === 'radio' && (
-                                                    <Radio.Group
-                                                        name={name}
-                                                    >
-                                                        {data.map((radioItem, radioIndex) => {
-                                                            const {
-                                                                label,
-                                                                value,
-                                                            } = radioItem;
-
-                                                            return (
-                                                                <Radio
-                                                                    key={`radio-item-${radioIndex}`}
-                                                                    value={value}
-                                                                >
-                                                                    {label}
-                                                                </Radio>
-                                                            )
-                                                        })}
-                                                    </Radio.Group>
-                                                )}
-                                                {type === 'select' && (
-                                                    <Select
-                                                        placeholder={placeholder}
-                                                        options={data}
-                                                    />
-                                                )}
-                                                {type === 'cascader' && (
-                                                    <Cascader
-                                                        placeholder={placeholder}
-                                                        options={data}
-                                                    />
-                                                )}
-                                                {type === 'datePicker' && (
-                                                    <DatePicker
-                                                        placeholder={typeof placeholder === 'string' ? placeholder : placeholder[0]}
-                                                    />
-                                                )}
-                                                {type === 'rangePicker' && (
-                                                    <RangePicker
-                                                        placeholder={typeof placeholder === 'string' ? ['start', 'end'] : placeholder}
-                                                    />
-                                                )}
-                                                {type === 'radioButton' && (
-                                                    <Radio.Group
-                                                        name={name}
-                                                        style={{ width: '100%', }}
-                                                    >
-                                                        {data.map((radioButtonItem, radioIndex) => {
-                                                            const {
-                                                                label,
-                                                                value,
-                                                            } = radioButtonItem;
-
-                                                            return (
-                                                                <Radio.Button
-                                                                    key={`radio-item-${radioIndex}`}
-                                                                    value={value}
-                                                                >
-                                                                    {label}
-                                                                </Radio.Button>
-                                                            )
-                                                        })}
-                                                    </Radio.Group>
-                                                )}
-                                            </FormItem>
-                                        </Col>
-                                    </Row>
-                                </>
-                            )
-                        })}
+                                            <DataEntry {...item} />
+                                        </FormItem>
+                                    </Col>
+                                )
+                            })}
+                        </Row>
                         <Flex
                             justify={'center'}
                             style={{
@@ -428,40 +241,7 @@ export default function Home() {
                         </Flex>
                     </Form>
                 </Content>
-                <Row
-                    justify={'space-between'}
-                    style={{
-                        padding: '30px',
-                    }}
-                >
-                    <Col
-                        flex={'auto'}
-                        sm={{ span: 12 }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: '10px',
-                            }}
-                            disabled
-                        >
-                            Copyright© 2023. HYCO. All rights reserved
-                        </Text>
-                    </Col>
-                    <Col
-                        style={{
-                            alignItems: 'flex-end'
-                        }}
-                    >
-                        <Text
-                            style={{
-                                fontSize: '10px',
-                            }}
-                            disabled
-                        >
-                            해당 페이지는 데모버전으로, 상업적 용도로 사용할 수 없습니다.
-                        </Text>
-                    </Col>
-                </Row>
+                <Footer />
             </Layout>
         </ConfigProvider>
     )
@@ -478,14 +258,6 @@ const FormItem = styled(Form.Item)`
   
     .ant-form-item-row {
         width: 100%;
-    }
-  
-    .ant-input-number {
-        width: 100%;
-    }
-  
-    .ant-picker {
-       width: 100%;
     }
 `;
 
