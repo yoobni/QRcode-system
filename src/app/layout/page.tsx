@@ -25,6 +25,7 @@ import {
 } from 'antd';
 import type { FormInstance } from 'antd';
 import theme from '../../theme/themeConfig';
+import logo from '../../image/logo.png';
 
 const { Text, Title, Link } = Typography;
 const { RangePicker } = DatePicker;
@@ -269,7 +270,15 @@ export default function Home() {
                         boxShadow: '0 0.5px 8px rgba(0, 0, 0, 0.06), 0 1.5px 10px rgba(0, 0, 0, 0.08)',
                     }}
                 >
-                    <LogoBox />
+                    <LogoBox>
+                        <img src="../../image/logo.png" alt=""/>
+                    </LogoBox>
+                    <Image
+                        src="logo"
+                        alt={'test'}
+                        width={200}
+                    />
+
                     <Form
                         form={form}
                         name="validateOnly"
@@ -279,6 +288,13 @@ export default function Home() {
                     >
                         <Flex>
                             <Title level={2}>[데모버전] QR코드 데이터 입출력</Title>
+                            <img src="./logo.png" alt=""/>
+                            <Image
+                                src={'./logo.png'}
+                                alt={'logo'}
+                                width={100}
+                                height={100}
+                            />
                         </Flex>
                         {MOCK_DATA.map((item, index) => {
                             const {
