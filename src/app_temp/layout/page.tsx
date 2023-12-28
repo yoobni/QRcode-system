@@ -1,7 +1,11 @@
 'use client';
 import React, { ReactNode, useState, useEffect } from "react";
-import Image from 'next/image';
+// import Image from 'next/image';
 import styled from "styled-components";
+import { Image } from 'antd';
+
+import LegacyImage from 'next/legacy/image';
+
 import {
     Layout,
     Row,
@@ -25,7 +29,7 @@ import {
 } from 'antd';
 import type { FormInstance } from 'antd';
 import theme from '../../theme/themeConfig';
-import logo from '../../image/logo.png';
+import logo from '../../../public/images/logo.png';
 
 const { Text, Title, Link } = Typography;
 const { RangePicker } = DatePicker;
@@ -271,7 +275,7 @@ export default function Home() {
                     }}
                 >
                     <LogoBox>
-                        <img src="../../image/logo.png" alt=""/>
+                        <img src="../../../public/images/logo.png" alt=""/>
                     </LogoBox>
                     <Image
                         src="logo"
@@ -288,7 +292,7 @@ export default function Home() {
                     >
                         <Flex>
                             <Title level={2}>[데모버전] QR코드 데이터 입출력</Title>
-                            <img src="./logo.png" alt=""/>
+                            <img src="../../../public/images/logo.png" alt=""/>
                             <Image
                                 src={'./logo.png'}
                                 alt={'logo'}

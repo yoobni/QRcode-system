@@ -33,16 +33,20 @@ export interface DataEntryType {
 const DataEntry = (props: DataEntryType) => {
     const {
         name,
-        type = 'input',
+        type = 'text',
         placeholder,
         maxLength = 100,
         data = [],
+        ...rest
     } = props;
 
     switch (type) {
-        case 'input':
+        case 'text':
+        case 'tel':
             return (
                 <Input
+                    {...rest}
+                    type={type}
                     placeholder={typeof placeholder === 'string' ? placeholder : placeholder[0]}
                     maxLength={maxLength}
                     allowClear
@@ -51,10 +55,11 @@ const DataEntry = (props: DataEntryType) => {
         case 'number':
             return (
                 <InputNumber
-                    style={{ width: '100%' }}
+                    {...rest}
                     placeholder={typeof placeholder === 'string' ? placeholder : placeholder[0]}
                     maxLength={maxLength}
                     controls={false}
+                    style={{ width: '100%' }}
                 />
             );
         case 'radio':
@@ -82,6 +87,7 @@ const DataEntry = (props: DataEntryType) => {
         case 'select':
             return (
                 <Select
+                    {...rest}
                     placeholder={placeholder}
                     options={data}
                 />
@@ -89,6 +95,7 @@ const DataEntry = (props: DataEntryType) => {
         case 'cascader':
             return (
                 <Cascader
+                    {...rest}
                     placeholder={placeholder}
                     options={data}
                 />
@@ -96,15 +103,17 @@ const DataEntry = (props: DataEntryType) => {
         case 'datePicker':
             return (
                 <DatePicker
-                    style={{ width: '100%', }}
+                    {...rest}
                     placeholder={typeof placeholder === 'string' ? placeholder : placeholder[0]}
+                    style={{ width: '100%', }}
                 />
             );
         case 'rangePicker':
             return (
                 <RangePicker
-                    style={{ width: '100%', }}
+                    {...rest}
                     placeholder={typeof placeholder === 'string' ? ['start', 'end'] : placeholder}
+                    style={{ width: '100%', }}
                 />
             );
         case 'radioButton':
