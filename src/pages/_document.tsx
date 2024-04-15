@@ -2,12 +2,12 @@
 import { Head, Html, Main, NextScript } from "next/document";
 
 const Document = () => {
-    const title = "Urbanstay";
+    const title = "QR 테스트";
 
     return (
         <Html lang="ko">
             <Head>
-                <meta name="description" content="어반스테이" />
+                <meta name="description" content="QR 테스트" />
                 <meta name="apple-mobile-web-app-title" content={title} />
                 <meta name="apple-mobile-web-app-capable" content="yes" />
                 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
@@ -26,7 +26,6 @@ const Document = () => {
                     crossOrigin="anonymous"
                     href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.6/dist/web/static/pretendard.css"
                 />
-
                 <link rel="stylesheet" type="text/css" href='https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css' />
             </Head>
             <body>

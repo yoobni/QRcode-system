@@ -13,7 +13,7 @@ const Footer = () => {
         <Row
             justify={'space-between'}
             style={{
-                padding: '30px',
+                padding: '30px 10px',
             }}
         >
             <Col
@@ -40,7 +40,7 @@ const Footer = () => {
                     }}
                     disabled
                 >
-                    해당 페이지는 데모버전으로, 상업적 용도로 사용할 수 없습니다.
+                    해당 페이지는 데모버전으로, 상업적 용도로 사용할 수 없으며, 사용 시 불이익을 받을 수 있습니다.
                 </Text>
             </Col>
         </Row>

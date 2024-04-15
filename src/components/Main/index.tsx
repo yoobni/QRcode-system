@@ -12,16 +12,21 @@ import {
     Divider,
     ConfigProvider,
     Flex,
-    QRCode,
+    // QRCode,
     Typography,
     Radio,
     List,
+    Spin,
 } from 'antd';
 import type { FormInstance } from 'antd';
 import theme from '../../theme/themeConfig';
 import DataEntry, { DataEntryType, } from "@components/Layout/DataEntry";
 import { Footer } from '@components/Template';
 import type { RadioChangeEvent } from 'antd';
+import { useRouter } from "next/router";
+import { QRCode } from 'react-qrcode-logo';
+import { parseCookies, setCookie } from 'nookies';
+
 
 
 const { Text, Title, Link } = Typography;
@@ -58,7 +63,7 @@ const MOCK_DATA: DataEntryType[] = [
     },
     {
         name: 'phone',
-        type: 'number',
+        type: 'tel',
         label: '전화번호',
         placeholder: '전화번호 11자리 / EX) 01012345678',
         maxLength: 11,
@@ -97,7 +102,7 @@ const MOCK_DATA: DataEntryType[] = [
     },
     {
         name: 'bankNumber',
-        type: 'number',
+        type: 'tel',
         label: '계좌번호',
         placeholder: '"-" 제외한 번호만 입력',
         rules: [{
@@ -153,14 +158,37 @@ const data = [
 export default function Main() {
     const [form] = Form.useForm();
     const [value, setValue] = useState<string>('');
+    const router = useRouter();
+
+    const [isShow, setIsShow] = useState<boolean>(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+
+    const [sendData, setSendData] = useState<any>(null);
+    const [showTest, setShowTest] = useState<boolean>(false);
 
     const onSubmit = async () => {
-        let request = form.getFieldsValue();
-        let stringRequest = JSON.stringify(request);
-        let encodeData = btoa(stringRequest);
+        const {
+            bank,
+            bankNumber,
+            phone,
+        } = form.getFieldsValue();
 
-        // TODO: add result page
+        setIsLoading(true);
+
+        setSendData(
+            bank + '\t'
+            + bankNumber + '\t'
+            + 'wjdtkd' + '/'
+            + 'ehddml' + '/'
+            + phone
+        );
+
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 1000);
     }
+
+    console.log(sendData);
 
     return (
         <ConfigProvider
@@ -241,7 +269,6 @@ export default function Main() {
                         <Divider orientation="left" plain>
                             문진 정보
                         </Divider>
-
                         {data.map((item, index) => {
                             const {
                                 name,
@@ -309,7 +336,6 @@ export default function Main() {
                                     margin: '0 0 16px',
                                 }}
                             >
-
                                 <Text
                                     style={{
                                         fontSize: '16px',
@@ -319,28 +345,45 @@ export default function Main() {
                                 </Text>
                             </Row>
                             <Row>
-                                <Radio.Group
-                                    defaultValue="a"
-                                    size="middle"
+                                <FormItem
+                                    name={'question5'}
+                                    rules={[{
+                                        required: true,
+                                        validator: async (_, checked) => {
+                                            if (!checked) {
+                                                return Promise.reject(
+                                                    new Error("you must accept to deposit 10% of the sale price"),
+                                                );
+                                            }
+                                        },
+                                    }]}
                                     style={{
-                                        display: 'flex',
-                                        width: '80%',
-                                        margin: '0 auto',
+                                        margin: '0 0 8px',
                                     }}
                                 >
-                                    <Radio.Button
-                                        className={'problem-button'}
-                                        value="true"
+                                    <Radio.Group
+                                        defaultValue="a"
+                                        size="middle"
+                                        style={{
+                                            display: 'flex',
+                                            width: '80%',
+                                            margin: '0 auto',
+                                        }}
                                     >
-                                        예
-                                    </Radio.Button>
-                                    <Radio.Button
-                                        className={'problem-button'}
-                                        value="false"
-                                    >
-                                        아니오
-                                    </Radio.Button>
-                                </Radio.Group>
+                                        <Radio.Button
+                                            className={'problem-button'}
+                                            value="true"
+                                        >
+                                            예
+                                        </Radio.Button>
+                                        <Radio.Button
+                                            className={'problem-button'}
+                                            value="false"
+                                        >
+                                            아니오
+                                        </Radio.Button>
+                                    </Radio.Group>
+                                </FormItem>
                             </Row>
                         </QuestionCol>
 
@@ -348,7 +391,6 @@ export default function Main() {
                         {/*    name: 'question5',*/}
                         {/*    title: ``,*/}
                         {/*},*/}
-
                         {/*<List*/}
                         {/*    dataSource={data}*/}
                         {/*    renderItem={(item, index) => (*/}
@@ -364,7 +406,6 @@ export default function Main() {
                         {/*                        title={<a href="https://ant.design">{item.title}</a>}*/}
                         {/*                        description="Ant Design, a design language for background applications, is refined by Ant UED Team"*/}
                         {/*                    />*/}
-
                         {/*                </List.Item>*/}
                         {/*            </Col>*/}
                         {/*            <Col>*/}
@@ -376,12 +417,50 @@ export default function Main() {
                         {/*                    buttonStyle="solid"*/}
                         {/*                />*/}
                         {/*            </Col>*/}
-
                         {/*        </Flex>*/}
                         {/*    )}*/}
                         {/*/>*/}
-
-
+                        {isLoading ? (
+                            <Flex
+                                justify={'center'}
+                                style={{
+                                    padding: '30px 0',
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        display: 'flex',
+                                        width: '220px',
+                                        height: '220px',
+                                        background: '#efefef',
+                                        borderRadius: '5px',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                >
+                                    <Spin size={'large'} />
+                                </div>
+                            </Flex>
+                        ) : (
+                            <>
+                                {sendData && (
+                                    <Flex
+                                        justify={'center'}
+                                        style={{
+                                            padding: '30px 0',
+                                        }}
+                                    >
+                                        <QRCode
+                                            value={sendData}
+                                            size={200}
+                                            logoImage="/images/53.png"
+                                            logoWidth={55}
+                                            logoHeight={61.5}
+                                        />
+                                    </Flex>
+                                )}
+                            </>
+                        )}
                         <Flex
                             justify={'center'}
                             style={{
@@ -392,20 +471,36 @@ export default function Main() {
                                 QR코드 생성
                             </SubmitButton>
                         </Flex>
-                        {value.length > 0 && (
+
+
+                        {showTest && (
                             <Flex
                                 justify={'center'}
                                 style={{
-                                    paddingTop: '50px',
+                                    padding: '30px 0',
                                 }}
                             >
                                 <QRCode
-                                    errorLevel="H"
-                                    value={"https://ant.design/"}
-                                    icon="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+                                    value={`국민\t1002260184917\t정상/동의/01071552151`}
+                                    size={200}
+                                    logoImage="/images/53.png"
+                                    logoWidth={55}
+                                    logoHeight={61.5}
                                 />
                             </Flex>
                         )}
+                        <Flex
+                            justify={'center'}
+                            style={{
+                                paddingTop: '30px',
+                            }}
+                        >
+                            <Button
+                                onClick={() => setShowTest(true)}
+                            >
+                                한글 입력 테스트용
+                            </Button>
+                        </Flex>
                         <Flex
                             style={{
                                 paddingTop: '30px',
@@ -457,21 +552,19 @@ const QuestionCol = styled(Col)`
   
     .problem-button {
        display: flex;
-      flex: 1; 
-      align-items: center;
-      justify-content: center;
+        flex: 1; 
+        align-items: center;
+        justify-content: center;
     }
 
-  b {
-     color: red;
-  }
+    b {
+        color: red;
+    }
 `;
 
 const SubmitButton = ({ form, children }: { form: FormInstance, children: ReactNode }) => {
     const [submittable, setSubmittable] = useState(false);
     const values = Form.useWatch([], form);
-
-    console.log(values);
 
     useEffect(() => {
         form.validateFields({ validateOnly: true })
